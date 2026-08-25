@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#071225">
+  <meta name="description" content="SquirrelDeck (松械平台) Chrome 擴充功能公開資訊、隱私權政策與支援資訊。">
+  <title>SquirrelDeck (松械平台)</title>
+  <link rel="icon" href="favicon.png" type="image/png">
+  <style>
+    :root{
+      --bg:#06101f;--bg2:#0a1a34;--panel:rgba(13,30,56,.72);--panel-strong:rgba(15,35,67,.92);
+      --line:rgba(117,163,240,.22);--line-strong:rgba(117,163,240,.46);--ink:#f4f7ff;--muted:#aebbd3;
+      --blue:#4d8fff;--cyan:#38c6ff;--blue-soft:#85b5ff;--shadow:0 30px 90px rgba(0,0,0,.36);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;background:var(--bg)}
+    body{
+      margin:0;min-height:100vh;color:var(--ink);
+      background:radial-gradient(circle at 15% 10%,rgba(62,118,255,.22),transparent 34%),radial-gradient(circle at 85% 18%,rgba(27,202,255,.13),transparent 30%),linear-gradient(145deg,var(--bg) 0%,#0a1930 52%,#071327 100%);
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Microsoft JhengHei",sans-serif;
+      line-height:1.65;overflow-x:hidden;
+    }
+    body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.38;background-image:linear-gradient(rgba(92,140,220,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(92,140,220,.055) 1px,transparent 1px);background-size:48px 48px;mask-image:linear-gradient(to bottom,black,transparent 78%)}
+    a{color:inherit}.shell{width:min(1160px,calc(100% - 40px));margin:0 auto;position:relative;z-index:1}
+    .topbar{position:sticky;top:0;z-index:20;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);background:linear-gradient(to bottom,rgba(5,14,29,.92),rgba(5,14,29,.68));border-bottom:1px solid rgba(121,164,230,.12)}
+    .nav{height:84px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+    .brand{--sy-left-x:68px;--sy-left-y:-70px;--sy-right-x:-10px;--sy-right-y:43px;--sy-slash-length:129px;--sy-slash-angle:-54deg;position:relative;display:inline-flex;align-items:center;gap:12px;height:84px;min-height:84px;padding:0 20px;margin:0;overflow:visible;isolation:isolate;border:none;border-radius:0;text-decoration:none;font-weight:800;letter-spacing:.01em;translate:0 0;background:linear-gradient(90deg,rgba(10,30,65,0) 0%,rgba(30,82,155,.10) 14%,rgba(34,91,180,.14) 48%,rgba(25,67,135,.08) 84%,rgba(10,30,65,0) 100%);box-shadow:inset 0 0 24px rgba(41,112,230,.06),0 0 25px rgba(0,135,255,.035)}
+    .brand img{width:116px;height:auto;object-fit:contain;transform:translate(8px,6px);position:relative;z-index:2;flex:0 0 auto;filter:drop-shadow(0 7px 18px rgba(54,138,255,.30))}
+    .brand .brand-cn{position:relative;z-index:2;font-size:32px;font-weight:800;letter-spacing:2px;line-height:1;white-space:nowrap;transform:translate(1px,0);color:transparent;-webkit-text-fill-color:transparent;-webkit-background-clip:text;background-clip:text;background-image:repeating-linear-gradient(90deg,#6aaeff 0px,#88c7ff 22px,#e8f8ff 35px,#ffffff 43px,#49e4ff 53px,#ffffff 62px,#4b94ff 75px,#7fc4ff 101px,#6aaeff 120px);background-size:120px 100%;background-position:0 50%;text-shadow:0 0 5px rgba(90,180,255,.48),0 0 13px rgba(15,180,255,.23);filter:drop-shadow(0 0 5px rgba(40,160,255,.30));animation:syBrandEnergyPerfect 1.7s linear infinite;will-change:background-position;backface-visibility:hidden}
+    .brand::before,.brand::after{content:"";position:absolute;top:50%;width:var(--sy-slash-length);height:2px;border-radius:999px;pointer-events:none;z-index:0;background:linear-gradient(90deg,rgba(90,185,255,0) 0%,rgba(100,195,255,.10) 17%,rgba(185,230,255,.48) 37%,rgba(248,253,255,.90) 50%,rgba(110,200,255,.40) 64%,rgba(65,155,255,.08) 82%,rgba(65,155,255,0) 100%);box-shadow:0 0 5px rgba(145,215,255,.26),0 0 12px rgba(45,150,255,.10);opacity:.72}
+    .brand::before{right:calc(100% - 5px);transform-origin:100% 50%;translate:var(--sy-left-x) var(--sy-left-y);transform:translateY(-50%) rotate(var(--sy-slash-angle))}
+    .brand::after{left:calc(100% - 5px);transform-origin:0 50%;translate:var(--sy-right-x) var(--sy-right-y);transform:translateY(-50%) rotate(var(--sy-slash-angle))}
+    .navlinks{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.navlinks a{color:#c8d4e9;text-decoration:none;font-size:14px;font-weight:700;padding:9px 12px;border-radius:10px;transition:.2s ease}.navlinks a:hover,.navlinks a.active{color:#fff;background:rgba(102,151,231,.15);box-shadow:inset 0 0 0 1px rgba(123,174,255,.12)}
+    .site-view{display:none;animation:viewIn .28s ease both}.site-view.active{display:block}@keyframes viewIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}@keyframes syBrandEnergyPerfect{from{background-position:0 50%}to{background-position:120px 50%}}
+    .hero{padding:72px 0 42px}.hero-card{position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(300px,.75fr);align-items:center;gap:46px;min-height:500px;padding:58px 58px 54px;border:1px solid var(--line-strong);border-radius:34px;background:linear-gradient(135deg,rgba(22,49,91,.9),rgba(9,24,48,.82)),rgba(10,26,50,.82);box-shadow:var(--shadow);isolation:isolate}.hero-card::before{content:"";position:absolute;width:520px;height:520px;right:-180px;top:-220px;border-radius:50%;background:radial-gradient(circle,rgba(65,149,255,.34),rgba(65,149,255,0) 70%);z-index:-1}.hero-card::after{content:"";position:absolute;inset:auto -8% -45% 35%;height:420px;transform:rotate(-8deg);background:linear-gradient(90deg,transparent,rgba(44,178,255,.12),transparent);filter:blur(18px);z-index:-1}.eyebrow{display:inline-flex;align-items:center;gap:9px;margin-bottom:18px;padding:7px 11px;border:1px solid rgba(99,157,255,.28);border-radius:999px;background:rgba(68,119,210,.11);color:#a9cdff;font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}.eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 18px var(--cyan)}h1{margin:0;font-size:clamp(46px,6vw,74px);line-height:1.04;letter-spacing:-.045em}h1 .cn{display:block;margin-top:10px;font-size:.45em;letter-spacing:.08em;color:#afc6e9;font-weight:720}.lead{max-width:660px;margin:24px 0 0;color:#c2cee2;font-size:clamp(17px,2vw,20px);line-height:1.85}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}.button{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 19px;border:1px solid rgba(118,165,239,.44);border-radius:14px;text-decoration:none;font-size:14px;font-weight:800;transition:transform .2s ease,border-color .2s ease,background .2s ease,box-shadow .2s ease;cursor:pointer}.button.primary{background:linear-gradient(135deg,#397be3,#3164bd);border-color:#79a8f2;box-shadow:0 12px 30px rgba(35,105,216,.28)}.button.secondary{background:rgba(10,27,51,.48);color:#e5edfb}.button:hover{transform:translateY(-2px);border-color:#9bc3ff}.button.primary:hover{box-shadow:0 16px 36px rgba(35,105,216,.38)}
+    .logo-stage{position:relative;display:grid;place-items:center;min-height:410px;isolation:isolate;overflow:visible}
+    .logo-stage::before{content:"";position:absolute;width:450px;height:450px;border-radius:50%;background:radial-gradient(circle,rgba(49,151,255,.18) 0%,rgba(37,115,255,.08) 42%,transparent 72%);filter:blur(18px);z-index:0;animation:heroGlobeAura 5s ease-in-out infinite}
+    .hero-globe-art{position:relative;z-index:2;width:min(455px,100%);height:auto;object-fit:contain;filter:drop-shadow(0 26px 42px rgba(0,0,0,.34)) drop-shadow(0 0 24px rgba(52,159,255,.22));animation:heroGlobeBreath 5s ease-in-out infinite;transform:translate(27px,-2px)}
+    .hero-globe-motion{position:absolute;z-index:3;width:min(360px,78%);aspect-ratio:1;border-radius:50%;pointer-events:none;overflow:hidden;mix-blend-mode:screen;opacity:.72;translate:0 0;scale:1;transform:none}
+    .hero-globe-motion::before{content:"";position:absolute;inset:3%;border-radius:50%;background:repeating-linear-gradient(90deg,transparent 0 27px,rgba(112,205,255,.24) 28px,rgba(210,244,255,.62) 29px,transparent 30px 56px),repeating-radial-gradient(ellipse at center,transparent 0 22px,rgba(94,184,255,.18) 23px,rgba(210,242,255,.42) 24px,transparent 25px 47px);mask-image:radial-gradient(circle,#000 0 64%,rgba(0,0,0,.92) 69%,transparent 72%);-webkit-mask-image:radial-gradient(circle,#000 0 64%,rgba(0,0,0,.92) 69%,transparent 72%);filter:drop-shadow(0 0 7px rgba(80,190,255,.34));opacity:.48;animation:heroGridTurn 6.4s linear infinite}
+    .hero-globe-motion::after{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,transparent 0 12%,rgba(142,226,255,.04) 18%,rgba(202,247,255,.78) 23%,rgba(68,174,255,.18) 27%,transparent 34% 62%,rgba(122,216,255,.08) 70%,rgba(233,253,255,.7) 76%,transparent 82%);mask-image:radial-gradient(circle,transparent 0 61%,#000 65%,#000 68%,transparent 72%);-webkit-mask-image:radial-gradient(circle,transparent 0 61%,#000 65%,#000 68%,transparent 72%);filter:drop-shadow(0 0 10px rgba(64,179,255,.55));animation:heroRimSpin 4.8s linear infinite}
+    .hero-orbit{position:absolute;z-index:4;width:min(392px,84%);height:min(142px,31%);border:1px solid rgba(117,210,255,.34);border-radius:50%;pointer-events:none;box-shadow:0 0 9px rgba(58,166,255,.18),inset 0 0 9px rgba(90,198,255,.08);mix-blend-mode:screen;translate:0 0;scale:1}
+    .hero-orbit.orbit-a{transform:rotate(-13deg);animation:heroOrbitA 7.5s linear infinite}
+    .hero-orbit.orbit-b{width:min(366px,80%);height:min(116px,26%);border-color:rgba(101,181,255,.25);transform:rotate(61deg);animation:heroOrbitB 9.2s linear infinite reverse}
+    .hero-globe-spark{position:absolute;z-index:5;width:8px;height:8px;border-radius:50%;background:#eafcff;box-shadow:0 0 7px #fff,0 0 18px #45baff,0 0 28px #2a8dff;pointer-events:none;translate:0 0;scale:1;animation:heroSparkOrbit 5.6s linear infinite}
+    @keyframes heroGlobeBreath{0%,100%{transform:translate(27px,-2px) scale(1);filter:drop-shadow(0 26px 42px rgba(0,0,0,.34)) drop-shadow(0 0 22px rgba(52,159,255,.20))}50%{transform:translate(27px,-5px) scale(1.008);filter:drop-shadow(0 28px 46px rgba(0,0,0,.35)) drop-shadow(0 0 32px rgba(70,185,255,.32))}}
+    @keyframes heroGlobeAura{0%,100%{opacity:.72;transform:scale(.985)}50%{opacity:1;transform:scale(1.015)}}
+    @keyframes heroGridTurn{0%{background-position:0 0,0 0;transform:rotate(-4deg) scaleX(.96)}50%{background-position:56px 0,0 8px;transform:rotate(-4deg) scaleX(1)}100%{background-position:112px 0,0 0;transform:rotate(-4deg) scaleX(.96)}}
+    @keyframes heroRimSpin{to{transform:rotate(360deg)}}
+    @keyframes heroOrbitA{0%{transform:rotate(-13deg) scaleX(1)}50%{transform:rotate(167deg) scaleX(.92)}100%{transform:rotate(347deg) scaleX(1)}}
+    @keyframes heroOrbitB{0%{transform:rotate(61deg) scaleX(.92)}50%{transform:rotate(241deg) scaleX(1)}100%{transform:rotate(421deg) scaleX(.92)}}
+    @keyframes heroSparkOrbit{0%{transform:translate(145px,-104px) scale(.65);opacity:.25}20%{opacity:1}50%{transform:translate(-152px,52px) scale(1.15);opacity:.75}75%{opacity:.95}100%{transform:translate(145px,-104px) scale(.65);opacity:.25}}
+
+    .desktop-br{display:block}
+    .nowrap{white-space:nowrap}
+    .section{padding:26px 0;scroll-margin-top:94px}.section-heading{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start;column-gap:56px;margin-bottom:20px}.section-heading>div,.section-heading>p{min-width:0}.section-heading h2{margin:0;font-size:clamp(27px,3vw,38px);letter-spacing:-.025em;line-height:1.25}.section-heading p{max-width:none;margin:0;padding-top:5px;color:var(--muted);line-height:1.75}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.card{position:relative;overflow:hidden;min-height:188px;padding:24px;border:1px solid var(--line);border-radius:22px;background:linear-gradient(145deg,rgba(17,36,68,.82),rgba(10,25,48,.72));box-shadow:0 18px 50px rgba(0,0,0,.15)}.card::after{content:"";position:absolute;width:130px;height:130px;right:-52px;top:-50px;border-radius:50%;background:radial-gradient(circle,rgba(68,146,255,.13),transparent 70%)}.icon{display:grid;place-items:center;width:42px;height:42px;margin-bottom:18px;border:1px solid rgba(115,166,246,.35);border-radius:13px;background:linear-gradient(145deg,rgba(62,125,230,.22),rgba(39,93,183,.08));color:#9ec7ff;font-size:18px;font-weight:900;box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}.card h3{margin:0 0 8px;font-size:18px}.card p{margin:0;color:var(--muted);font-size:14px;line-height:1.75}.drive{margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:16px}.drive-card{padding:26px;border-radius:24px;border:1px solid var(--line);background:rgba(12,29,55,.74)}.drive-card h3{margin:0 0 8px;font-size:20px}.drive-card p{margin:0;color:var(--muted);font-size:14px}.trust{margin:26px 0 70px;padding:30px;border:1px solid rgba(105,166,255,.3);border-radius:26px;background:linear-gradient(135deg,rgba(22,48,88,.78),rgba(12,30,55,.68));display:block}.trust h2{margin:0 0 7px;font-size:24px}.trust p{margin:0;color:var(--muted);max-width:860px}
+    .page-view{padding:54px 0 78px}.page-hero{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:22px;padding:28px 30px;border:1px solid var(--line-strong);border-radius:26px;background:linear-gradient(135deg,rgba(22,49,91,.82),rgba(9,24,48,.78));box-shadow:0 20px 60px rgba(0,0,0,.18)}.page-hero-brand{display:flex;align-items:center;gap:18px}.page-hero h1{font-size:clamp(31px,5vw,48px);letter-spacing:-.03em}.page-hero p{margin:7px 0 0;color:var(--muted)}.policy-toolbar{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}.mini-tab{appearance:none;border:1px solid rgba(118,165,239,.34);background:rgba(8,24,48,.5);color:#cad8ef;padding:9px 13px;border-radius:11px;font:inherit;font-size:13px;font-weight:800;cursor:pointer}.mini-tab.active,.mini-tab:hover{background:rgba(61,123,224,.22);border-color:#719ff0;color:#fff}.policy-content{display:grid;gap:15px}.policy-summary{padding:18px 20px;border:1px solid rgba(81,162,255,.35);border-left:4px solid #58a9ff;border-radius:17px;background:rgba(32,76,137,.19);color:#d8e5f7}.policy-card{padding:22px 24px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(145deg,rgba(17,36,68,.78),rgba(10,25,48,.68));box-shadow:0 15px 45px rgba(0,0,0,.10)}.policy-card h2{margin:0 0 9px;color:#aecdff;font-size:20px}.policy-card p{margin:8px 0;color:#c0cde0}.policy-card ul{margin:10px 0 0;padding-left:23px;color:#c0cde0}.policy-card li{margin:7px 0}.policy-card code{padding:2px 5px;border-radius:6px;background:rgba(104,151,226,.12);color:#cfe0ff}.policy-card.note{border-color:rgba(240,194,89,.35);background:linear-gradient(145deg,rgba(78,63,29,.32),rgba(45,39,25,.28))}.support-grid{display:grid;grid-template-columns:1fr;gap:16px}.support-panel{padding:28px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(145deg,rgba(17,36,68,.82),rgba(10,25,48,.72))}.support-panel h2{margin:0 0 10px;font-size:23px}.support-panel p{color:var(--muted)}.support-list{display:grid;gap:12px;margin-top:22px}.support-item{display:flex;gap:13px;align-items:flex-start;padding:14px 15px;border:1px solid rgba(111,159,232,.16);border-radius:15px;background:rgba(8,23,45,.35)}.support-dot{flex:0 0 auto;width:9px;height:9px;margin-top:8px;border-radius:50%;background:#55a9ff;box-shadow:0 0 15px rgba(85,169,255,.7)}.support-item strong{display:block;margin-bottom:3px}.support-item span{color:var(--muted);font-size:14px}.support-brand{display:grid;place-items:center;min-height:330px;text-align:center}.support-brand img{width:min(255px,76%);height:auto;filter:drop-shadow(0 20px 34px rgba(0,0,0,.33)) drop-shadow(0 0 25px rgba(48,137,255,.18))}.support-brand p{max-width:300px}
+
+    @media (prefers-reduced-motion:reduce){.hero-globe-art,.logo-stage::before,.brand .brand-cn,.hero-globe-motion::before,.hero-globe-motion::after,.hero-orbit,.hero-globe-spark{animation:none!important}}
+    footer{border-top:1px solid rgba(114,156,223,.14);padding:28px 0 40px;color:#8494af;font-size:13px}.footer-row{display:flex;justify-content:space-between;gap:18px;align-items:center;flex-wrap:wrap}.footer-links{display:flex;gap:18px;flex-wrap:wrap}.footer-links a{color:#a8b7cf;text-decoration:none}.footer-links a:hover{color:#fff}
+    @media (max-width:900px){.hero-card{grid-template-columns:1fr;padding:42px 34px 22px;gap:12px}.logo-stage{min-height:320px}.hero-globe-art{width:min(360px,82vw)}.grid{grid-template-columns:1fr 1fr}.drive{grid-template-columns:1fr}.section-heading{grid-template-columns:1fr;row-gap:10px}.section-heading p{padding-top:0}.navlinks a:nth-child(2){display:none}.page-hero{align-items:flex-start;flex-direction:column}.policy-toolbar{justify-content:flex-start}.support-grid{grid-template-columns:1fr}.support-brand{min-height:250px}}
+    @media (max-width:620px){.desktop-br{display:none}.shell{width:min(100% - 24px,1160px)}.nav{height:74px}.brand{gap:7px;height:74px;min-height:74px;padding:0 8px;--sy-slash-length:70px;--sy-left-x:34px;--sy-left-y:-40px;--sy-right-x:-2px;--sy-right-y:25px}.brand img{width:80px;transform:translate(2px,3px)}.brand .brand-cn{font-size:21px;letter-spacing:1px;transform:none}.navlinks a{padding:8px;font-size:12px}.navlinks a:nth-child(2){display:none}.hero{padding-top:34px}.hero-card{padding:32px 22px 18px;border-radius:25px}.lead{font-size:16px}.logo-stage{min-height:280px}.logo-stage::before{width:300px;height:300px}.hero-globe-art{width:min(315px,86vw)}.grid{grid-template-columns:1fr}.section-heading{grid-template-columns:1fr;row-gap:10px}.button{width:100%}.actions{width:100%}.trust{padding:23px}.footer-row{align-items:flex-start;flex-direction:column}.page-view{padding-top:30px}.page-hero{padding:22px 20px}.page-hero-brand{align-items:flex-start}.page-hero-brand img{width:56px;height:56px}.policy-card{padding:19px 18px}}
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="shell nav">
+      <a class="brand" href="#home" data-route="home" aria-label="SquirrelDeck 首頁">
+        <img src="brand-logo.png" alt="SquirrelDeck 機械松鼠完整 Logo">
+        <span class="brand-cn">松械平台</span>
+      </a>
+      <nav class="navlinks" aria-label="主要導覽">
+        <a href="#features" data-route="features">功能</a>
+        <a href="#drive" data-route="drive">Google Drive</a>
+        <a href="#github" data-route="github">GitHub Actions</a>
+        <a href="#privacy" data-route="privacy">隱私權</a>
+        <a href="#support" data-route="support">支援</a>
+      </nav>
+    </div>
+  </div>
+
+  <main class="shell">
+    <div class="site-view active" id="view-home">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-card">
+          <div>
+            <div class="eyebrow">Chrome 擴充功能平台</div>
+            <h1 id="hero-title">SquirrelDeck<span class="cn">松械平台</span></h1>
+            <p class="lead">整合使用者腳本、常駐與獨立 UI、鬧鐘、媒體排程、剪貼簿、桌面截圖／錄影與介面設定的 Chrome 網頁輔助工具平台。</p>
+            <div class="actions">
+              <a class="button primary" href="#privacy" data-route="privacy">查看隱私權政策</a>
+              <a class="button secondary" href="#support" data-route="support">支援資訊</a>
+            </div>
+          </div>
+          <div class="logo-stage" aria-hidden="true">
+            <img class="hero-globe-art" src="hero-energy-globe.png" alt="">
+            <span class="hero-globe-motion"></span>
+            <span class="hero-orbit orbit-a"></span>
+            <span class="hero-orbit orbit-b"></span>
+            <span class="hero-globe-spark"></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="features">
+        <div class="section-heading"><div><h2>一個工作區，集中管理常用工具</h2></div><p>SquirrelDeck 以瀏覽器內的工作流程為核心，<br class="desktop-br">讓腳本、介面、提醒與媒體工具維持在同一套操作環境中。</p></div>
+        <div class="grid">
+          <article class="card"><div class="icon">{ }</div><h3>腳本管理</h3><p>建立、整理與執行使用者腳本，並搭配網址規則與排程設定。</p></article>
+          <article class="card"><div class="icon">UI</div><h3>常駐與獨立 UI</h3><p>管理可在網頁中顯示的自訂介面，以及獨立開啟的工具視窗。</p></article>
+          <article class="card"><div class="icon">◎</div><h3>鬧鐘與媒體排程</h3><p>建立提醒、截圖與錄影相關排程，集中查看與管理工作項目。</p></article>
+          <article class="card"><div class="icon">▣</div><h3>桌面截圖與錄影</h3><p>提供桌面區域截圖、全螢幕錄影，以及後續編輯與儲存流程。</p></article>
+          <article class="card"><div class="icon">⌘</div><h3>剪貼簿工具</h3><p>整理日常使用的剪貼內容，協助跨工作流程快速取用。</p></article>
+          <article class="card"><div class="icon">◇</div><h3>介面自訂</h3><p>調整語言、顯示模式、視覺效果與其他介面參數，建立一致的工作環境。</p></article>
+        </div>
+      </section>
+
+      <section class="section" id="drive">
+        <div class="section-heading"><div><h2>Google Drive 選用同步</h2></div><p>同步功能由使用者自行選擇啟用，<br class="desktop-br">設定資料會儲存在使用者自己的 <span class="nowrap">Google Drive</span>。</p></div>
+        <div class="drive">
+          <article class="drive-card"><h3>隱藏應用資料夾</h3><p>適合一般自動同步。備份資料儲存在 Google Drive 的應用專用隱藏空間。</p></article>
+          <article class="drive-card"><h3>可見備份資料夾</h3><p>可在「我的雲端硬碟」看到 SquirrelDeck Backup，並依功能分類保存設定備份。截圖與錄影媒體檔案不包含在設定同步中。</p></article>
+        </div>
+      </section>
+
+      <section class="section" id="github">
+        <div class="section-heading"><div><h2>GitHub Actions 選用雲端擷取</h2></div><p>需要雲端虛擬瀏覽器時，可連接使用者自己的 GitHub 帳號。<br class="desktop-br">不使用 Cloudflare、SquirrelDeck 共用伺服器或開發者的 Actions 額度。</p></div>
+        <div class="drive">
+          <article class="drive-card"><h3>自己的私人 Repository</h3><p>SquirrelDeck 透過 GitHub 官方 Device Flow 授權，在使用者自己的帳號建立私人擷取 Repository，並由該 Repository 的 GitHub Actions 執行 Playwright 截圖／錄影。</p></article>
+          <article class="drive-card"><h3>自己的 GitHub 額度</h3><p>Actions 執行時間與 Artifact 暫存空間計入 Repository 所有者自己的 GitHub 方案。結果以私人 Artifact 短期保存，成功取回後 SquirrelDeck 會請求刪除。</p></article>
+        </div>
+      </section>
+
+      <section class="trust">
+        <div><h2>透明的資料處理說明</h2><p>公開隱私權政策說明 SquirrelDeck 在瀏覽器本機、選用 Google Drive 同步與選用 GitHub Actions 雲端擷取時如何處理資料，以及各項權限的使用目的。完整政策可由頂部「隱私權」或首頁「查看隱私權政策」進入；英文版本可在政策頁面內切換。</p></div>
+      </section>
+    </div>
+
+    <div class="site-view page-view" id="view-privacy">
+      <section class="page-hero">
+        <div class="page-hero-brand"><div><h1>隱私權政策</h1><p>最後更新：2026-08-16</p></div></div>
+        <div class="policy-toolbar"><button class="mini-tab active" type="button" data-route="privacy">繁體中文</button><button class="mini-tab" type="button" data-route="privacy-en">English</button><button class="mini-tab" type="button" data-route="home">返回首頁</button></div>
+      </section>
+      <div class="policy-content">
+        <div class="policy-summary">SquirrelDeck 的大部分腳本、排程、介面與本機截圖／錄影功能在使用者的瀏覽器本機處理。使用者也可明確選擇 Google Drive 設定同步或使用自己的 GitHub Repository／GitHub Actions 執行雲端截圖與錄影。SquirrelDeck 不出售使用者資料。</div>
+        <section class="policy-card"><h2>資料處理原則</h2><p>SquirrelDeck 用於使用者自訂的網頁自動化、提醒、介面與媒體工作。Google Drive 同步和 GitHub 雲端擷取都是選用功能，只會在使用者主動連接帳號並啟用後執行。</p></section>
+        <section class="policy-card"><h2>本機資料</h2><p>腳本程式碼、腳本名稱、網址規則、跨網域允許清單、常駐／獨立 UI、鬧鐘、排程、媒體任務、執行記錄與介面設定，預設儲存在瀏覽器擴充功能的本機儲存空間。背景高畫質、前景視窗與桌面截圖／錄影模式在本機 Chrome 處理。</p></section>
+        <section class="policy-card"><h2>網頁內容與媒體檔案</h2><p>只有在使用者主動開始截圖／錄影，或明確建立並啟用媒體排程後，SquirrelDeck 才會處理指定頁面或桌面內容。畫面可能包含網址、網站內容、帳號資訊或個人通訊。</p><p>本機模式產生的 PNG、JPEG 或 WebM 會由 Chrome 下載或依使用者選擇存入本機截圖剪貼簿。Google Drive 設定同步不包含截圖與錄影媒體檔案。</p></section>
+        <section class="policy-card"><h2>GitHub 選用雲端截圖與錄影</h2><p>使用者選擇 GitHub 雲端模式並完成授權後，SquirrelDeck 會把目標網址、預定執行時間與擷取設定直接傳送到使用者自己的私人 GitHub Repository 與 GitHub Actions。SquirrelDeck 不提供共用 Repository、共用 Runner 或共用 Actions 額度；運算時間與 Artifact 暫存空間計入 Repository 所有者自己的 GitHub 帳號。</p><p>GitHub Actions 會在全新的 Playwright／Chromium 瀏覽器中開啟目標網址，不會帶入本機 Chrome Cookie、擴充功能或登入工作階段。結果短期保存為使用者帳號中的私人 GitHub Actions Artifact，Workflow 設定的保留期為一天；SquirrelDeck 成功下載或匯入後會請求刪除該 Artifact。媒體不經過 Cloudflare，也不會傳送到 SquirrelDeck 開發者伺服器。</p></section>
+        <section class="policy-card"><h2>GitHub OAuth 憑證保管</h2><p>GitHub 登入使用官方 Device Flow，SquirrelDeck 不要求使用者建立或貼上 Personal Access Token。取得的 GitHub OAuth access token 會先以 AES-GCM 加密；加密後的 ciphertext／IV 與非機密 metadata 儲存在使用者自己的 Google Drive 隱藏 <code>appDataFolder</code>，解密金鑰只保存在目前 Chrome 裝置的擴充功能本機儲存空間。解密後的 token 只在需要 GitHub API 呼叫時保留於瀏覽器工作階段。</p><p>若移除擴充功能、清除擴充功能本機資料或更換裝置，本機解密金鑰可能遺失，此時使用者需要重新連接 GitHub。解除 GitHub 雲端連線時，SquirrelDeck 會嘗試刪除 Drive 中的加密授權資料並清除本機金鑰；使用者 GitHub 帳號中的私人 Repository 不會自動刪除。</p></section>
+        <section class="policy-card"><h2>Google Drive 選用同步</h2><p>只有在使用者明確同意並連結 Google 帳號後，SquirrelDeck 才會使用 Google Drive。一般設定同步可選擇隱藏 <code>appDataFolder</code> 或由 SquirrelDeck 建立的可見 <code>SquirrelDeck Backup</code> 資料夾，內容可包含腳本、網址規則、排程、媒體任務、鬧鐘、常駐／獨立 UI 與介面參數。</p><p>為跨裝置辨識備份位置，SquirrelDeck 可能在隱藏應用資料空間保存小型位置 marker。GitHub 雲端模式另外使用同一隱藏應用資料空間保存「加密後」的 GitHub OAuth 憑證資料。截圖與錄影媒體檔案不會上傳到 Google Drive。</p></section>
+        <section class="policy-card"><h2>使用者腳本與第三方服務</h2><p>使用者腳本由使用者自行建立或匯入，可能讀取或修改獲授權網頁，並在使用者明確允許時向第三方 API 發出請求。GitHub 雲端模式只在使用者主動啟用時直接與 GitHub 通訊。第三方網站及 API 的資料處理由其各自條款與隱私政策規範。</p></section>
+        <section class="policy-card"><h2>權限用途</h2><ul><li><code>storage</code>：保存本機腳本、任務、介面設定及 GitHub 憑證保管庫的本機 AES 金鑰。</li><li><code>userScripts</code>、<code>alarms</code>：執行使用者提供的腳本、提醒與排程。</li><li><code>activeTab</code>、<code>tabs</code>、<code>scripting</code>、<code>webNavigation</code>：處理使用者授權分頁、等待條件及自動化／媒體流程。</li><li><code>downloads</code>、<code>offscreen</code>、<code>tabCapture</code>、<code>desktopCapture</code>、<code>system.display</code>、<code>debugger</code>：建立、處理與儲存使用者要求的截圖／錄影。</li><li>選用 <code>identity</code> 與 Google Drive API：僅在 Google Drive 同步或 GitHub 加密憑證保管需要 Google OAuth 時使用。</li><li>選用網站與 Cookie 權限：只有使用者設定的腳本、跨網域請求或特定登入流程需要時才會請求／使用。</li></ul></section>
+        <section class="policy-card"><h2>資料分享與出售</h2><p>SquirrelDeck 不出售使用者資料，也不會用於廣告、信用評估或與核心功能無關的目的。資料只會依使用者的明確設定傳送到其選擇的服務，例如 Google Drive、GitHub，或使用者腳本指定的第三方 API。</p></section>
+        <section class="policy-card"><h2>資料保存與刪除</h2><p>本機資料由使用者透過 SquirrelDeck 或 Chrome 擴充功能管理機制控制。Google Drive 資料由使用者自己的 Google 帳號控制。GitHub 雲端結果是私人 Actions Artifact，設定最長保留一天並在成功取回後請求刪除。解除 GitHub 連線不會自動刪除使用者帳號中的私人 Repository。</p></section>
+        <section class="policy-card note"><h2>Google API 有限使用規範（Limited Use）</h2><p>從 Google API 接收的資訊，其使用方式將遵守 Google API Services User Data Policy，包括 Limited Use（有限使用）要求。</p></section>
+        <section class="policy-card"><h2>聯絡方式</h2><p>如對本隱私權政策或 SquirrelDeck 的資料處理方式有疑問，請使用 SquirrelDeck Chrome Web Store 商品頁所列的開發者聯絡管道。</p></section>
+      </div>
+    </div>
+
+    <div class="site-view page-view" id="view-privacy-en" lang="en">
+      <section class="page-hero">
+        <div class="page-hero-brand"><div><h1>Privacy Policy</h1><p>Last updated: August 16, 2026</p></div></div>
+        <div class="policy-toolbar"><button class="mini-tab" type="button" data-route="privacy">繁體中文</button><button class="mini-tab active" type="button" data-route="privacy-en">English</button><button class="mini-tab" type="button" data-route="home">Home</button></div>
+      </section>
+      <div class="policy-content">
+        <div class="policy-summary">Most SquirrelDeck scripts, schedules, interface data, and local screenshot/recording functions are processed in the user's browser. Users may also explicitly enable Google Drive settings sync or cloud capture in their own GitHub repository and GitHub Actions account. SquirrelDeck does not sell user data.</div>
+        <section class="policy-card"><h2>Data processing principles</h2><p>SquirrelDeck supports user-configured web automation, reminders, interfaces, and media tasks. Google Drive synchronization and GitHub cloud capture are optional and run only after the user explicitly connects the relevant account and enables the feature.</p></section>
+        <section class="policy-card"><h2>Local data</h2><p>Script code, names, URL rules, cross-domain allowlists, resident/independent UI definitions, reminders, schedules, media tasks, execution records, and interface settings are stored locally by default. Background high-quality, foreground-window, and desktop screenshot/recording modes are processed in local Chrome.</p></section>
+        <section class="policy-card"><h2>Web content and media files</h2><p>SquirrelDeck processes a specified page or desktop content only after the user starts a screenshot/recording action or explicitly enables a media schedule. Captured content may contain URLs, website content, account information, or personal communications.</p><p>Local-mode PNG, JPEG, or WebM output is downloaded through Chrome or stored in the local screenshot clipboard as selected by the user. Screenshot and recording media files are not included in Google Drive settings synchronization.</p></section>
+        <section class="policy-card"><h2>Optional GitHub cloud screenshots and recordings</h2><p>After the user selects GitHub cloud mode and completes authorization, SquirrelDeck sends the target URL, scheduled execution time, and capture settings directly to the user's own private GitHub repository and GitHub Actions. SquirrelDeck provides no shared repository, runner, or Actions quota; compute time and artifact storage count against the repository owner's own GitHub account.</p><p>GitHub Actions opens the target URL in a fresh Playwright/Chromium browser and does not inherit local Chrome cookies, extensions, or signed-in sessions. Results are stored briefly as private GitHub Actions artifacts in the user's account with workflow retention set to one day. After successful download/import, SquirrelDeck requests deletion of the artifact. Media does not pass through Cloudflare or SquirrelDeck developer servers.</p></section>
+        <section class="policy-card"><h2>GitHub OAuth credential storage</h2><p>GitHub sign-in uses the official Device Flow; SquirrelDeck does not ask the user to create or paste a Personal Access Token. The GitHub OAuth access token is encrypted with AES-GCM. Ciphertext/IV and non-secret metadata are stored in the user's own hidden Google Drive <code>appDataFolder</code>, while the decryption key remains only in extension-local storage on the current Chrome device. The decrypted token is kept only for the browser session when GitHub API calls are required.</p><p>If the extension is removed, local extension data is cleared, or the user moves to another device, the local decryption key may be lost and GitHub must be reconnected. Disconnecting GitHub cloud mode attempts to delete the encrypted authorization data from Drive and clears the local key; the private repository in the user's GitHub account is not deleted automatically.</p></section>
+        <section class="policy-card"><h2>Optional Google Drive synchronization</h2><p>Google Drive is used only after the user explicitly consents and connects a Google account. General settings sync can use the hidden <code>appDataFolder</code> or a visible <code>SquirrelDeck Backup</code> folder created by SquirrelDeck. Synced settings can include scripts, URL rules, schedules, media tasks, reminders, resident/independent UI definitions, and interface settings.</p><p>SquirrelDeck may store a small backup-location marker in hidden app data for cross-device backup-location discovery. GitHub cloud mode also uses the hidden app-data space for the encrypted GitHub OAuth credential data. Screenshot and recording media files are not uploaded to Google Drive.</p></section>
+        <section class="policy-card"><h2>User scripts and third-party services</h2><p>User scripts are created or imported by the user and may read or modify authorized webpages or contact third-party APIs explicitly allowed by the user. GitHub cloud mode communicates directly with GitHub only when enabled by the user. Third-party sites and APIs are governed by their own terms and privacy policies.</p></section>
+        <section class="policy-card"><h2>Permissions</h2><ul><li><code>storage</code>: stores local scripts, tasks, interface settings, and the local AES key for the GitHub credential vault.</li><li><code>userScripts</code> and <code>alarms</code>: run user-provided scripts, reminders, and schedules.</li><li><code>activeTab</code>, <code>tabs</code>, <code>scripting</code>, and <code>webNavigation</code>: operate on user-authorized tabs and support wait conditions and automation/media flows.</li><li><code>downloads</code>, <code>offscreen</code>, <code>tabCapture</code>, <code>desktopCapture</code>, <code>system.display</code>, and <code>debugger</code>: create, process, and save user-requested screenshots/recordings.</li><li>Optional <code>identity</code> and Google Drive APIs: used only when Google OAuth is needed for Drive sync or the encrypted GitHub credential vault.</li><li>Optional website and cookie permissions: requested/used only when needed for user-configured scripts, cross-domain requests, or specific sign-in flows.</li></ul></section>
+        <section class="policy-card"><h2>Sharing and sale of data</h2><p>SquirrelDeck does not sell user data and does not use it for advertising, credit assessment, or unrelated purposes. Data is sent only according to the user's explicit configuration, such as to Google Drive, GitHub, or a third-party API selected by a user script.</p></section>
+        <section class="policy-card"><h2>Retention and deletion</h2><p>Local data is controlled through SquirrelDeck or Chrome extension management. Google Drive data is controlled by the user's Google account. GitHub cloud results are private Actions artifacts configured for at most one day of retention and are requested for deletion after successful retrieval. Disconnecting GitHub does not automatically delete the private repository in the user's account.</p></section>
+        <section class="policy-card note"><h2>Google API Limited Use</h2><p>Information received from Google APIs will be used in accordance with the Google API Services User Data Policy, including the Limited Use requirements.</p></section>
+        <section class="policy-card"><h2>Contact</h2><p>For questions about this privacy policy or SquirrelDeck's data handling, use the developer contact channel listed on the SquirrelDeck Chrome Web Store listing.</p></section>
+      </div>
+    </div>
+
+    <div class="site-view page-view" id="view-support">
+      <section class="page-hero">
+        <div class="page-hero-brand"><div><h1>支援資訊</h1><p>問題回報、功能建議與資料處理相關詢問。</p></div></div>
+        <div class="policy-toolbar"><button class="mini-tab" type="button" data-route="privacy">隱私權政策</button><button class="mini-tab" type="button" data-route="home">返回首頁</button></div>
+      </section>
+      <div class="support-grid">
+        <section class="support-panel">
+          <h2>需要協助？</h2>
+          <p>若需要回報問題、提出功能建議或詢問 SquirrelDeck 的資料處理方式，請使用 Chrome Web Store 商品頁所列的開發者聯絡管道。</p>
+          <div class="support-list">
+            <div class="support-item"><span class="support-dot"></span><div><strong>問題回報</strong><span>建議附上發生步驟、Chrome 版本、作業系統與可重現的錯誤訊息。</span></div></div>
+            <div class="support-item"><span class="support-dot"></span><div><strong>功能建議</strong><span>可說明使用情境、預期操作方式與目前遇到的限制。</span></div></div>
+            <div class="support-item"><span class="support-dot"></span><div><strong>隱私與資料處理</strong><span>可透過同一開發者聯絡管道詢問權限、Google Drive 同步、GitHub Actions 雲端擷取或資料保存相關問題。</span></div></div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="shell footer-row">
+      <div>© 2026 SquirrelDeck (松械平台)</div>
+      <div class="footer-links">
+        <a href="#privacy" data-route="privacy">隱私權政策</a>
+        <a href="#privacy-en" data-route="privacy-en">Privacy Policy</a>
+        <a href="#support" data-route="support">支援資訊</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (() => {
+      const views = {
+        home: document.getElementById('view-home'),
+        privacy: document.getElementById('view-privacy'),
+        'privacy-en': document.getElementById('view-privacy-en'),
+        support: document.getElementById('view-support')
+      };
+      const homeAnchors = new Set(['features', 'drive', 'github']);
+
+      function normalizeRoute(value) {
+        const route = String(value || '').replace(/^#/, '').trim();
+        if (!route) return 'home';
+        return views[route] || homeAnchors.has(route) ? route : 'home';
+      }
+
+      function setActiveNav(route) {
+        document.querySelectorAll('.navlinks [data-route]').forEach((link) => {
+          const linkRoute = link.dataset.route;
+          const active = linkRoute === route || (route === 'privacy-en' && linkRoute === 'privacy');
+          link.classList.toggle('active', active);
+          if (active) link.setAttribute('aria-current', 'page');
+          else link.removeAttribute('aria-current');
+        });
+      }
+
+      function renderRoute(rawRoute, { scroll = true } = {}) {
+        const route = normalizeRoute(rawRoute);
+        const viewKey = homeAnchors.has(route) ? 'home' : route;
+        Object.entries(views).forEach(([key, element]) => element.classList.toggle('active', key === viewKey));
+        setActiveNav(route);
+        document.title = route === 'privacy' ? 'SquirrelDeck (松械平台) 隱私權政策'
+          : route === 'privacy-en' ? 'SquirrelDeck Privacy Policy'
+          : route === 'support' ? 'SquirrelDeck (松械平台) 支援資訊'
+          : 'SquirrelDeck (松械平台)';
+        if (!scroll) return;
+        requestAnimationFrame(() => {
+          if (homeAnchors.has(route)) {
+            document.getElementById(route)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          } else {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        });
+      }
+
+      document.addEventListener('click', (event) => {
+        const trigger = event.target.closest('[data-route]');
+        if (!trigger) return;
+        const route = normalizeRoute(trigger.dataset.route);
+        event.preventDefault();
+        const nextHash = `#${route}`;
+        if (location.hash === nextHash) renderRoute(route);
+        else location.hash = nextHash;
+      });
+
+      window.addEventListener('hashchange', () => renderRoute(location.hash));
+      renderRoute(location.hash, { scroll: false });
+    })();
+  </script>
+</body>
+</html>
